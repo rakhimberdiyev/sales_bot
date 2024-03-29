@@ -16,7 +16,7 @@ async def on_startup_notify(dp: Dispatcher, user:str):
                     text += i.strip()
                     text += "\n"
                 text += datetime
-                await dp.bot.send_message(admin, f"{text}\n\nUshbu user barcha jarayonni yakunladi", parse_mode=None)
+                await dp.bot.send_message(chat_id="-1002102115794", text=f"{text}\n\nUshbu user barcha jarayonni yakunladi", parse_mode=None)
             else:
                 await dp.bot.send_message(admin, "Bot ishga tushdi")
 
