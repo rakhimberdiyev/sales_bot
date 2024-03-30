@@ -8,7 +8,7 @@ async def on_startup_notify(dp: Dispatcher, user:str):
     
     for admin in ADMINS:
         try:
-            if user != 'None':
+            if user != None:
                 text = ""
                 user = user[7:-1].split(' ')
                 datetime = user[-1]
@@ -20,6 +20,15 @@ async def on_startup_notify(dp: Dispatcher, user:str):
             else:
                 await dp.bot.send_message(admin, "Bot ishga tushdi")
 
+        except Exception as err:
+            logging.exception(err)
+            
+            
+async def on_shutdown_notify(bot: Bot):
+    """Notify admins about successful stop"""
+    for admin in ADMINS:
+        try:
+            await bot.send_message(chat_id=admin, text="Bot to'xtadi.")
         except Exception as err:
             logging.exception(err)
             

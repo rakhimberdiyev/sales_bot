@@ -21,7 +21,6 @@ async def bot_start(message: types.Message):
     print("users: ", users)  
     if str(message.from_user.id) not in str(users):
         await db.add_user(message.from_user.id)
-        print("Foydalanuvchi qo'shildi")
         await message.answer(f"Assalamu alaykum, {message.from_user.full_name}!\n\nMARS ITSchoolning sales botiga xush kelibsiz!\nTillardan birini tanlang\n\nДобро пожаловать в sales bot от Mars IT School!\nВыберите один из языков:", reply_markup=langs)
     else:
         await message.answer(f"Assalamu alaykum, {message.from_user.full_name}!\n\nMARS ITSchoolning sales botiga xush kelibsiz!\nTillardan birini tanlang\n\nДобро пожаловать в sales bot от Mars IT School!\nВыберите один из языков:", reply_markup=langs)
@@ -87,14 +86,11 @@ async def us_fullname_state(message: types.Message, state=FSMContext):
         telegram_id = message.from_user.id
         try:
             await db.update_user(phone, full_name, age, username, telegram_id)
-            print(await db.select_all_users())
-            print("update qilindi")
             await state.finish()
         except Exception as e:
             print(e)
             
         message_ids = data.get('message_ids', [])
-        print(message_ids)
         for message_id in message_ids:
             try:
                 await dp.bot.delete_message(message.from_user.id, message_id)
@@ -138,7 +134,6 @@ async def send_question(message: types.Message, state: FSMContext, answers: list
         # await message.answer("Test yakunlandi. Raxmat!")
         await db.update_user_test_step(id)
         await state.finish()
-        print(answers)
         
         categories = {'Dizayn': 0, 'Frontend': 0, 'Backend': 0, 'Fullstack': 0}
         for answer in answers:
@@ -172,15 +167,15 @@ Natijalaringiz asosida quyidagi kurslar siz uchun eng mos keladi:\n\n"""
         # Natijalarni foydalanuvchiga yuborish
         await message.answer_photo(photo="AgACAgIAAxkBAAIIImYFEpV7blhrRZg1PYGkjVMn-ajaAAI91TEbfGQpSCTfeMCLWVVBAQADAgADcwADNAQ", caption=results_message, reply_markup=application)
         
-        await db.update_user_result(result, id)
-        user = await db.select_finished_user(id)
-        filial = await db.select_filial(id)
-        if filial == None:
-            await asyncio.sleep(90)
-            filial = await db.select_filial(id)
-            if filial == None:
-                user = str(user)
-                await on_startup_notify(dp, user)
+        # await db.update_user_result(result, id)
+        # user = await db.select_finished_user(id)
+        # filial = await db.select_filial(id)
+        # if filial == None:
+        #     await asyncio.sleep(15)
+        #     filial = await db.select_filial(id)
+        #     if filial == None:
+        #         user = str(user)
+        #         await on_startup_notify(dp, user)
 
         
         
@@ -234,17 +229,6 @@ async def contact_state_handler(call: types.CallbackQuery):
 🌐 Telegram kanal: @mars_it_school""")
     
     
-
-    
-
-        
-# @dp.message_handler(content_types=types.ContentType.PHOTO)
-# async def video_handler(message: types.Message):
-#     # video = message.video
-#     video = message
-#     print(video)
-#     print("video keldi")
-#     await message.answer(f"{video}")
     
     
 #######################################################################################################  
@@ -311,14 +295,11 @@ async def us_fullname_state(message: types.Message, state=FSMContext):
         telegram_id = message.from_user.id
         try:
             await db.update_user(phone, full_name, age, username, telegram_id)
-            print(await db.select_all_users())
-            print("update qilindi")
             await state.finish()
         except Exception as e:
             print(e)
             
         message_ids = data.get('message_ids', [])
-        print(message_ids)
         for message_id in message_ids:
             try:
                 await dp.bot.delete_message(message.from_user.id, message_id)
@@ -339,7 +320,6 @@ async def us_fullname_state(message: types.Message, state=FSMContext):
 
 @dp.callback_query_handler(text='start_test_ru', state=None)
 async def start_test_ru_handler(call: types.CallbackQuery, state: FSMContext):
-    print(call.data)
     await state.set_state(TestStateRu.waiting_for_answer)
     await state.update_data(current_question_index=0, answers=[])
     await call.message.delete()
@@ -364,7 +344,6 @@ async def send_question_ru(message: types.Message, state: FSMContext, answers: l
         # await message.answer("Test yakunlandi. Raxmat!")
         await db.update_user_test_step(id)
         await state.finish()
-        print(answers)
         categories = {'Dizayn': 0, 'Frontend': 0, 'Backend': 0, 'Fullstack': 0}
         for answer in answers:
             for value in answer.values():
@@ -399,14 +378,14 @@ async def send_question_ru(message: types.Message, state: FSMContext, answers: l
         
         await db.update_user_result(result, id)
         
-        user = await db.select_finished_user(id)
-        filial = await db.select_filial(id)
-        if filial == None:
-            await asyncio.sleep(90)
-            filial = await db.select_filial(id)
-            if filial == None:
-                user = str(user)
-                await on_startup_notify(dp, user)
+        # user = await db.select_finished_user(id)
+        # filial = await db.select_filial(id)
+        # if filial == None:
+        #     await asyncio.sleep(15)
+        #     filial = await db.select_filial(id)
+        #     if filial == None:
+        #         user = str(user)
+        #         await on_startup_notify(dp, user)
         
         
         
@@ -430,8 +409,7 @@ async def handle_answer(call: types.CallbackQuery, state: FSMContext):
         pass
     
     await send_question_ru(call.message, state, answers, id=call.from_user.id)
-
-    # print(answers[-1])   
+    
 
 @dp.callback_query_handler(text='application_ru')
 async def application_handler(call: types.CallbackQuery, state=None):
@@ -444,9 +422,7 @@ async def application_handler(call: types.CallbackQuery, state:FSMContext):
     filial = call.data
     await db.update_user_finish_step(filial, call.from_user.id)
     user = await db.select_finished_user(call.from_user.id)
-    print(call.from_user.id)
     user = str(user)
-    print(type(user))
     await call.message.delete()
     await call.message.answer("Ваша заявка принята ✅ \n\nВ скором времени с вами свяжутся 📞", reply_markup=contact_ru)
     await state.finish()
@@ -462,13 +438,3 @@ async def contact_state_handler(call: types.CallbackQuery):
 👩‍💻Чат с Администратором @mars_edu_admin
 
 🌐Наш канал: @mars_it_school""")
-    
-    
-        
-# @dp.message_handler(content_types=types.ContentType.PHOTO)
-# async def video_handler(message: types.Message):
-#     # video = message.video
-#     video = message
-#     print(video)
-#     print("video keldi")
-#     await message.answer(f"{video}")
